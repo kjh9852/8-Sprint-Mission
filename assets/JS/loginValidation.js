@@ -1,7 +1,7 @@
 import {
-  isEmail,
-  isNotEmpty,
-  hasMinLength,
+  validateEmail,
+  validateEmpty,
+  validatePassword,
   isPasswordHide,
 } from './validation.js';
 
@@ -13,6 +13,27 @@ const emailInput = document.querySelector('input[type="email"]');
 const passwordInput = document.querySelector('input[type="password"]');
 const passwordHideBtn = document.querySelector('.hide-btn');
 
+function validateEmailField() {
+  const value = emailInput.value;
+  emailInvalid = validateEmpty(value, emailInput, 'emailEmpty');
+
+  if (emailInvalid) {
+    emailInvalid = validateEmail(value, emailInput, 'emailValid');
+  }
+  checkFormButton();
+}
+
+function validatePasswordField() {
+  const value = passwordInput.value;
+  passwordInvalid = validateEmpty(value, passwordInput, 'passwordEmpty');
+
+  if (passwordInvalid) {
+    passwordInvalid = validatePassword(value, passwordInput, 'passwordValid');
+  }
+
+  checkFormButton();
+}
+
 function checkFormButton() {
   const loginBtn = document.querySelector('button[type="submit"]');
   const activeLoginBtn = emailInvalid && passwordInvalid;
@@ -20,31 +41,13 @@ function checkFormButton() {
 }
 // 로그인 버튼 활성화
 
-function validationEmail() {
-  const value = emailInput.value;
-  emailInvalid = isNotEmpty(value, emailInput, 'emailEmpty');
+emailInput.addEventListener('blur', function () {
+  validateEmailField();
+});
 
-  if (emailInvalid) {
-    emailInvalid = isEmail(value, emailInput, 'emailValid');
-  }
-
-  checkFormButton();
-}
-// 이메일 검사
-
-function validationPassword() {
-  const value = passwordInput.value;
-  passwordInvalid = isNotEmpty(value, passwordInput, 'passwordEmpty');
-
-  if (passwordInvalid) {
-    passwordInvalid = hasMinLength(value, 8, passwordInput, 'passwordValid');
-  }
-  checkFormButton();
-}
-// 비밀번호 검사
-
-emailInput.addEventListener('blur', validationEmail);
-passwordInput.addEventListener('blur', validationPassword);
+passwordInput.addEventListener('blur', function () {
+  validatePasswordField();
+});
 
 passwordHideBtn.addEventListener('click', e => {
   isPasswordHide(passwordHideBtn, passwordInput);

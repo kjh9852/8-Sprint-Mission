@@ -1,8 +1,8 @@
 import {
-  isEmail,
-  isNotEmpty,
-  hasMinLength,
-  isEqualsPassword,
+  validateEmail,
+  validateEmpty,
+  validatePassword,
+  validateEqualsPassword,
   isPasswordHide,
 } from './validation.js';
 
@@ -36,24 +36,26 @@ function checkFormButton() {
 }
 // 회원가입 버튼 활성화
 
-function validationEmail() {
+function validateEmailField() {
   const value = emailInput.value;
-  emailInvalid = isNotEmpty(value, emailInput, 'emailEmpty');
+  emailInvalid = validateEmpty(value, emailInput, 'emailEmpty');
+
   if (emailInvalid) {
-    emailInvalid = isEmail(value, emailInput, 'emailValid');
+    emailInvalid = validateEmail(value, emailInput, 'emailValid');
   }
   checkFormButton();
 }
 
-function validationPassword() {
+function validatePasswordField() {
   const value = passwordInput.value;
   passwordValue = value;
-  passwordInvalid = isNotEmpty(value, passwordInput, 'passwordEmpty');
+  passwordInvalid = validateEmpty(value, passwordInput, 'passwordEmpty');
+
   if (passwordInvalid) {
-    passwordInvalid = hasMinLength(value, 8, passwordInput, 'passwordValid');
+    passwordInvalid = validatePassword(value, passwordInput, 'passwordValid');
   }
   if (passwordInvalid) {
-    checkingPasswordInvalid = isEqualsPassword(
+    checkingPasswordInvalid = validateEqualsPassword(
       passwordValue,
       passwordCheckValue,
       passwordCheckInput,
@@ -65,24 +67,21 @@ function validationPassword() {
   checkFormButton();
 }
 
-emailInput.addEventListener('blur', validationEmail);
-// 이메일 검사
+emailInput.addEventListener('blur', validateEmailField);
 
 nickNameInput.addEventListener('blur', e => {
   const value = e.target.value;
-  nickNameInvalid = isNotEmpty(value, nickNameInput, 'nickNameEmpty');
+  nickNameInvalid = validateEmpty(value, nickNameInput, 'nickNameEmpty');
 
   checkFormButton();
 });
-// 닉네임 검사
 
-passwordInput.addEventListener('blur', validationPassword);
-// 비밀번호 검사
+passwordInput.addEventListener('blur', validatePasswordField);
 
 passwordCheckInput.addEventListener('blur', e => {
   const value = e.target.value;
   passwordCheckValue = value;
-  checkingPasswordInvalid = isEqualsPassword(
+  checkingPasswordInvalid = validateEqualsPassword(
     passwordCheckValue,
     passwordValue,
     passwordCheckInput,
@@ -91,7 +90,6 @@ passwordCheckInput.addEventListener('blur', e => {
 
   checkFormButton();
 });
-// 비밀번호 확인
 
 passwordHideBtn.addEventListener('click', () => {
   isPasswordHide(passwordHideBtn, passwordInput);

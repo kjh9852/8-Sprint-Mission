@@ -1,64 +1,73 @@
 import { ERROR_MESSAGE } from './errorMessage.js';
 
 function printErrMessage(isValid, inputElement, type) {
-  const existingErrMsg = inputElement.nextElementSibling;
-
-  if (existingErrMsg && existingErrMsg.classList.contains('error-msg')) {
-    existingErrMsg.remove();
-  }
-
+  const errMsgEl = inputElement.nextElementSibling;
   const findType = ERROR_MESSAGE.find(msg => msg.type === type);
   const errorMessage = findType ? findType.message : null;
-  const createErrMsgEl = document.createElement('p');
 
   if (!isValid) {
     inputElement.classList.add('error');
-    createErrMsgEl.classList.add('error-msg');
-    createErrMsgEl.textContent = errorMessage;
-    inputElement.insertAdjacentElement('afterend', createErrMsgEl);
+    errMsgEl.textContent = errorMessage;
+    errMsgEl.classList.remove('hide');
   } else {
     inputElement.classList.remove('error');
+    errMsgEl.textContent = '';
+    errMsgEl.classList.add('hide');
   }
 }
 // 에러메세지 출력
 
-export function isEmail(value, inputElement, type) {
-  let isValid = false;
-  let email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{3,}$/;
-  isValid = email_regex.test(value);
+function errMessage(isValid, inputElement, type) {
   const errorType = isValid ? '' : type;
   printErrMessage(isValid, inputElement, errorType);
-  return isValid;
 }
-// 이메일 검사
 
-export function isNotEmpty(value, inputElement, type) {
-  const isValid = value.trim() !== '';
-  const errorType = isValid ? '' : type;
-  printErrMessage(isValid, inputElement, errorType);
-  return isValid;
+function isEmail(value) {
+  const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{3,}$/;
+  return email_regex.test(value);
 }
-// 이메일,닉네임 검사
 
-export function hasMinLength(value, minLength, inputElement, type) {
+function hasMinLength(value, minLength) {
   const isValid = value.length >= minLength;
-  const errorType = isValid ? '' : type;
-  printErrMessage(isValid, inputElement, errorType);
   return isValid;
 }
-// 최소 비밀번호 검사
 
-export function isEqualsPassword(value, otherValue, inputElement, type) {
-  const isValid = value === otherValue;
-  const errorType = isValid ? '' : type;
-  printErrMessage(isValid, inputElement, errorType);
+function isNotEmpty(value) {
+  const isValid = value.trim() !== '';
   return isValid;
 }
-// 비밀번호 일치 검사
+
+function isEqualsPassword(value, otherValue) {
+  const isValid = value === otherValue;
+  return isValid;
+}
+
+export function validateEmail(value, inputElement, type) {
+  const isValid = isEmail(value);
+  errMessage(isValid, inputElement, type);
+  return isValid;
+}
+
+export function validatePassword(value, inputElement, type) {
+  const isValid = hasMinLength(value, 8);
+  errMessage(isValid, inputElement, type);
+  return isValid;
+}
+
+export function validateEmpty(value, inputElement, type) {
+  const isValid = isNotEmpty(value);
+  errMessage(isValid, inputElement, type);
+  return isValid;
+}
+
+export function validateEqualsPassword(value, otherValue, inputElement, type) {
+  const isValid = isEqualsPassword(value, otherValue);
+  errMessage(isValid, inputElement, type);
+  return isValid;
+}
 
 export function isPasswordHide(btn, input) {
   const isPasswordVisible = input.type === 'password';
   input.type = isPasswordVisible ? 'text' : 'password';
   btn.classList.toggle('show', isPasswordVisible);
 }
-// 비밀번호 보이기 활성화 버튼
