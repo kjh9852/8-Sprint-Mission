@@ -83,6 +83,9 @@
   font-weight: 600;
   line-height: 17.9px;
 }
+.hide {
+  display: none;
+}
 
 .login-btn {
   margin-bottom: 2.4rem;
